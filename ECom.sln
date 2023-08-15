@@ -21,7 +21,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecom.Web", "Ecom.Web\Ecom.W
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Authentication", "Authentication", "{68BFD905-0545-4FF2-ACAA-C752338C20A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECOM.Services.AuthAPI", "Ecom.Services.AuthAPI\ECOM.Services.AuthAPI.csproj", "{3014AD9F-244D-4D56-A7F7-A798A2986D2F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECOM.Services.AuthAPI", "Ecom.Services.AuthAPI\ECOM.Services.AuthAPI.csproj", "{3014AD9F-244D-4D56-A7F7-A798A2986D2F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E68CFEC8-82FF-4001-8F2C-65864CEB2013}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

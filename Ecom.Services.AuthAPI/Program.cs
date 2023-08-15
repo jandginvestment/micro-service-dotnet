@@ -65,6 +65,17 @@ app.MapPost("/api/auth/login", async (IAuthService _authService, [FromBody] Logi
     return Results.Ok(new ResponseDTO() { Result = loginResponse });
 
 }).WithName("Login").WithOpenApi();
+
+
+app.MapPost("/api/auth/assignRole", async (IAuthService _authService, [FromBody] RegistrationRequestDTO registrationRequest) =>
+{
+    var roleAssignment = await _authService.AssignRole(registrationRequest.Email, registrationRequest.Role.ToUpper());
+
+    if (!roleAssignment) { return Results.BadRequest(new ResponseDTO() { Message = "Role error encountered", IsSuccess = false }); }
+
+    return Results.Ok(new ResponseDTO() { Result = roleAssignment ,IsSuccess = true});
+
+}).WithName("assignRole").WithOpenApi();
 #endregion
 
 app.Run();
