@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "eSEWkHc8BtWRY7cyeTftND92gPFaL5KfHQj9S+mKTAk=",
+  "Source": "ECOM.Services.CouponAPI",
+  "BasePath": "_content/ECOM.Services.CouponAPI",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

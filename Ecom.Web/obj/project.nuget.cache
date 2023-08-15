@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "HVYMgJBbjD0HTT+ZlWsRJ+hggML3UT15QGYTCvbtkKzpBR7Mn6HcIf3IOQYXXmZavI+acJIK3107oC1JIQ+/Sg==",
+  "success": true,
+  "projectFilePath": "C:\\projects\\dotnet\\microservice\\ECom\\Ecom.Web\\Ecom.Web.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\juliu\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
