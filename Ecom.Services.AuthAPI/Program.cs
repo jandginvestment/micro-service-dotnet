@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using ECOM.Services.AuthAPI.Data;
 using ECOM.Services.AuthAPI.Models;
 using ECOM.Services.AuthAPI.Models.DTO;
@@ -62,7 +63,7 @@ app.MapPost("/api/auth/login", async (IAuthService _authService, [FromBody] Logi
 
     if(loginResponse.User == null) { return Results.BadRequest(new ResponseDTO() { Message = "user name or password are incorrect", IsSuccess = false }); }
 
-    return Results.Ok(new ResponseDTO() { Result = loginResponse });
+    return Results.Ok(new ResponseDTO() { Result = loginResponse});
 
 }).WithName("Login").WithOpenApi();
 

@@ -15,9 +15,8 @@ public class AppDBContext :IdentityDbContext<ApplicationUser>
     public DbSet<ApplicationUser> ApplicationUsers { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-       base.OnModelCreating(modelBuilder);
+        base.OnModelCreating(modelBuilder);
  
     }
 
 }
-

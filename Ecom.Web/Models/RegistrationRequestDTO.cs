@@ -1,4 +1,6 @@
-﻿namespace ECOM.Services.AuthAPI.Models.DTO;
+﻿
+namespace ECOM.Web.Models;
+
 
 public class RegistrationRequestDTO
 {

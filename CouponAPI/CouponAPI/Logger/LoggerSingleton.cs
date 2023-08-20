@@ -1,4 +1,5 @@
-﻿namespace ECOM.Services.CouponAPI.Logger; 
+﻿namespace ECOM.Services.CouponAPI.Logger
+{
     public sealed class LoggerSingleton
     {
         private LoggerSingleton() { }
@@ -20,4 +21,5 @@
         public void Log(string message) { Console.WriteLine(message); }
 
     }
+}
  

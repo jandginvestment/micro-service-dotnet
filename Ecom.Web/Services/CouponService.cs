@@ -5,77 +5,78 @@ using ECOM.Web.Utility;
 using Microsoft.Extensions.DependencyInjection;
 using static ECOM.Web.Utility.StaticDetails;
 
-namespace ECOM.Web.Services;
-
-public class CouponService : ICouponService
+namespace ECOM.Web.Services
 {
-    private readonly IBaseService _bseService;
+    public class CouponService : ICouponService
+    {
+        private readonly IBaseService _bseService;
 
-    public CouponService(IBaseService bseService)
-    {
-        _bseService = bseService;
-    }
-    public async Task<ResponseDTO?> CreateCouponAsync(CouponDTO coupon)
-    {
-        return await _bseService.SendAsync(new RequestDTO()
+        public CouponService(IBaseService bseService)
         {
-            APIType = APIType.POST,
-            Url = StaticDetails.CouponAPIBase + "/Post",
-            Data = coupon
-
-        });
-    }
-
-    public async Task<ResponseDTO?> DeleteCouponAsync(int couponId)
-    {
-        return await _bseService.SendAsync(new RequestDTO()
+            _bseService = bseService;
+        }
+        public async Task<ResponseDTO?> CreateCouponAsync(CouponDTO coupon)
         {
-            APIType = APIType.DELETE,
-            Url = StaticDetails.CouponAPIBase + "/Delete" + "/"+couponId,
+            return await _bseService.SendAsync(new RequestDTO()
+            {
+                APIType = APIType.POST,
+                Url = StaticDetails.CouponAPIBase + "/Post",
+                Data = coupon
 
-        });
-    }
+            });
+        }
 
-    public async Task<ResponseDTO?> GetAllCouponsAsync()
-    {
+        public async Task<ResponseDTO?> DeleteCouponAsync(int couponId)
+        {
+            return await _bseService.SendAsync(new RequestDTO()
+            {
+                APIType = APIType.DELETE,
+                Url = StaticDetails.CouponAPIBase + "/Delete" + "/"+couponId,
+
+            });
+        }
+
+        public async Task<ResponseDTO?> GetAllCouponsAsync()
+        {
          
-        return await _bseService.SendAsync(new RequestDTO()
+            return await _bseService.SendAsync(new RequestDTO()
+            {
+                APIType =APIType.GET,
+                Url =StaticDetails.CouponAPIBase+ "/Get",
+
+            });
+        }
+
+        public async Task<ResponseDTO?> GetCouponAsync(string couponCode)
         {
-            APIType =APIType.GET,
-            Url =StaticDetails.CouponAPIBase+ "/Get",
+            return await _bseService.SendAsync(new RequestDTO()
+            {
+                APIType = APIType.GET,
+                Url = StaticDetails.CouponAPIBase + "/getCouponsByCode" +"/"+couponCode,
 
-        });
-    }
+            });
+        }
 
-    public async Task<ResponseDTO?> GetCouponAsync(string couponCode)
-    {
-        return await _bseService.SendAsync(new RequestDTO()
+        public async Task<ResponseDTO?> GetCouponByIDAsync(int couponId)
         {
-            APIType = APIType.GET,
-            Url = StaticDetails.CouponAPIBase + "/getCouponsByCode" +"/"+couponCode,
 
-        });
-    }
+            return await _bseService.SendAsync(new RequestDTO()
+            {
+                APIType = APIType.GET,
+                Url = StaticDetails.CouponAPIBase + "/Get" + "/" + couponId,
 
-    public async Task<ResponseDTO?> GetCouponByIDAsync(int couponId)
-    {
+            });
+        }
 
-        return await _bseService.SendAsync(new RequestDTO()
+        public async Task<ResponseDTO?> UpdateCouponAsync(CouponDTO coupon)
         {
-            APIType = APIType.GET,
-            Url = StaticDetails.CouponAPIBase + "/Get" + "/" + couponId,
+            return await _bseService.SendAsync(new RequestDTO()
+            {
+                APIType = APIType.PUT,
+                Url = StaticDetails.CouponAPIBase + "/UpdateCoupon",
+                Data = coupon
 
-        });
-    }
-
-    public async Task<ResponseDTO?> UpdateCouponAsync(CouponDTO coupon)
-    {
-        return await _bseService.SendAsync(new RequestDTO()
-        {
-            APIType = APIType.PUT,
-            Url = StaticDetails.CouponAPIBase + "/UpdateCoupon",
-            Data = coupon
-
-        });
+            });
+        }
     }
 }

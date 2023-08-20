@@ -1,16 +1,18 @@
-﻿namespace ECOM.Services.CouponAPI.Middlewares;
-public class ExceptionHandlingMiddelware : IMiddleware
+﻿namespace ECOM.Services.CouponAPI.Middlewares
 {
-    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+    public class ExceptionHandlingMiddelware : IMiddleware
     {
-		try
-		{
-			await next(context);
-		}
-		catch (Exception)
-		{
+        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+        {
+            try
+            {
+                await next(context);
+            }
+            catch (Exception)
+            {
 
-			throw;
-		}
+                throw;
+            }
+        }
     }
 }

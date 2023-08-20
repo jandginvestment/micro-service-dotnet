@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace ECOM.Services.CouponAPI.Logger;
- 
+namespace ECOM.Services.CouponAPI.Logger
+{
     public static class DependencyInjection
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
@@ -10,3 +10,4 @@ namespace ECOM.Services.CouponAPI.Logger;
             return services;
         }
     }
+}

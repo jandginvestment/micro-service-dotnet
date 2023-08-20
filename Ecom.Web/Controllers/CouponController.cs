@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ECOM.Web.Controllers;
+
 public class CouponController : Controller
 {
     private readonly ICouponService _couponService;

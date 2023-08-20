@@ -35,7 +35,6 @@ public class AuthService : IAuthService
         else
         {
             var token = _jwtTokenGenerator.GenerateToken(user);
-
             response.User = new() { Email = user.Email, Name = user.Name, PhoneNumber = user.PhoneNumber };
             response.Token = token;
         }

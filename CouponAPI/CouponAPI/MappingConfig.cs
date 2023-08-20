@@ -2,16 +2,18 @@
 using ECOM.Services.CouponAPI.Models;
 using ECOM.Services.CouponAPI.Models.DTO;
 
-namespace ECOM.Services.CouponAPI;
-public class MappingConfig
+namespace ECOM.Services.CouponAPI
 {
-    public static MapperConfiguration RegisterMaps()
+    public class MappingConfig
     {
-        var mappingConfig = new MapperConfiguration(config =>
+        public static MapperConfiguration RegisterMaps()
         {
-            config.CreateMap<CouponDTO, Coupon>();
-            config.CreateMap<Coupon, CouponDTO>();
+            var mappingConfig = new MapperConfiguration(config =>
+            {
+                config.CreateMap<CouponDTO, Coupon>();
+                config.CreateMap<Coupon, CouponDTO>();
 
-        }); return mappingConfig;
+            }); return mappingConfig;
+        }
     }
 }
