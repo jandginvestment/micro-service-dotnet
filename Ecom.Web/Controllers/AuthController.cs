@@ -143,6 +143,7 @@ public class AuthController : Controller
             var claims = new List<Claim> { new Claim(JwtRegisteredClaimNames.Email, jwt.Claims.FirstOrDefault(u=>u.Type == JwtRegisteredClaimNames.Email)?.Value),
                 new Claim(JwtRegisteredClaimNames.Sub,  jwt.Claims.FirstOrDefault(u=>u.Type == JwtRegisteredClaimNames.Sub).Value),
                 new Claim(ClaimTypes.Name,  jwt.Claims.FirstOrDefault(u=>u.Type == JwtRegisteredClaimNames.Email).Value),
+                new Claim(ClaimTypes.Role,  jwt.Claims.FirstOrDefault(u=>u.Type == "role").Value),
                 new Claim(JwtRegisteredClaimNames.Name,  jwt.Claims.FirstOrDefault(u=>u.Type == JwtRegisteredClaimNames.Name).Value) };
 
             identity.AddClaims(claims);

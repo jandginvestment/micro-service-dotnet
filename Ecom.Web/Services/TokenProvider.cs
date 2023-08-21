@@ -18,10 +18,12 @@ namespace Ecom.Web.Services
            _contextAccessor.HttpContext?.Response.Cookies.Append(StaticDetails.Token,token);
         }
 
-        public void GetToken()
+        public string? GetToken()
         {
-            string? token;
+            string? token = null;
             bool? hasToken = _contextAccessor.HttpContext?.Request.Cookies.TryGetValue(StaticDetails.Token, out token);
+
+            return hasToken is not true ? string.Empty : token;
 
         }
 

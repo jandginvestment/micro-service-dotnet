@@ -34,7 +34,8 @@ public class AuthService : IAuthService
         }
         else
         {
-            var token = _jwtTokenGenerator.GenerateToken(user);
+            var roles = await _userManager.GetRolesAsync(user);
+            var token = _jwtTokenGenerator.GenerateToken(user,roles);
             response.User = new() { Email = user.Email, Name = user.Name, PhoneNumber = user.PhoneNumber };
             response.Token = token;
         }

@@ -24,7 +24,7 @@ public class AuthService : IAuthService
             Url = StaticDetails.AuthAPIBase + "/api/auth/assignRole",
             Data = registrationRequest
 
-        });
+        },withBearer:false);
     }
 
     public async Task<ResponseDTO?> LoginAsync(LoginRequestDTO loginRequest)
@@ -35,7 +35,7 @@ public class AuthService : IAuthService
             Url = StaticDetails.AuthAPIBase + "/api/auth/login",
             Data = loginRequest
 
-        });
+        },withBearer:false);
     }
 
     public async Task<ResponseDTO?> RegisterAsync(RegistrationRequestDTO registrationRequest)
@@ -46,7 +46,7 @@ public class AuthService : IAuthService
             Url = StaticDetails.AuthAPIBase + "/api/auth/register",
             Data = registrationRequest
 
-        });
+        }, withBearer: false);
     }
 
    

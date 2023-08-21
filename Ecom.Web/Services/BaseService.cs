@@ -4,6 +4,7 @@ using ECOM.Web.Services.IService;
 using Newtonsoft.Json;
 using System.Net;
 using System.Text;
+using Ecom.Web.Services.IService;
 using static ECOM.Web.Utility.StaticDetails;
 
 namespace ECOM.Web.Services
@@ -11,12 +12,14 @@ namespace ECOM.Web.Services
     public class BaseService : IBaseService
     {
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly ITokenProvider _tokenProvider;
 
-        public BaseService(IHttpClientFactory httpClientFactory)
+        public BaseService(IHttpClientFactory httpClientFactory,ITokenProvider tokenProvider)
         {
             _httpClientFactory = httpClientFactory;
+            _tokenProvider = tokenProvider;
         }
-        public async Task<ResponseDTO?> SendAsync(RequestDTO requestDTO)
+        public async Task<ResponseDTO?> SendAsync(RequestDTO requestDTO, bool withBearer = true)
         {
 
             try
@@ -31,6 +34,11 @@ namespace ECOM.Web.Services
                 //message.Headers.Add("Content-Type", "application/json");
 
                 //place for Token
+                if (withBearer)
+                {
+                    var token = _tokenProvider.GetToken();
+                    message.Headers.Add("Authorization", $"Bearer {token}");
+                }
 
                 message.RequestUri = new Uri(requestDTO.Url);
                 if (requestDTO.Data != null) { message.Content = new StringContent(JsonConvert.SerializeObject(requestDTO.Data), encoding: Encoding.UTF8, mediaType: "application/json"); }

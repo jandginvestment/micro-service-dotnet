@@ -17,11 +17,12 @@ public class JWTTokenGenerator : IJWTTokenGenerator
         _jWTOptions = jWTOptions.Value;
 
     }
-    public string GenerateToken(ApplicationUser applicationUser)
+    public string GenerateToken(ApplicationUser applicationUser, IEnumerable<string> roles)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.UTF8.GetBytes(_jWTOptions.Secret);
         var claims = new List<Claim> { new Claim(JwtRegisteredClaimNames.Email, applicationUser.Name), new Claim(JwtRegisteredClaimNames.Sub, applicationUser.Id), new Claim(JwtRegisteredClaimNames.Name, applicationUser.Name) };
+        claims.AddRange(roles.Select(role=> new Claim(ClaimTypes.Role,role)));
         var TokenDescriptor = new SecurityTokenDescriptor
         {
             Audience = _jWTOptions.Audience,

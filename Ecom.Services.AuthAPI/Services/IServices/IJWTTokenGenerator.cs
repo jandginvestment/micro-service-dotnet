@@ -4,5 +4,5 @@ namespace ECOM.Services.AuthAPI.Services.IServices;
 
 public interface IJWTTokenGenerator
 {
-    string GenerateToken(ApplicationUser applicationUser);
+    string GenerateToken(ApplicationUser applicationUser, IEnumerable<string> roles);
 }

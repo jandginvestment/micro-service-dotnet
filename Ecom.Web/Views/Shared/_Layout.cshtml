@@ -49,6 +49,9 @@
                         else
                         {
                             <li class="nav-item">
+                                <a asp-action="Logout" asp-controller="Auth" class="nav-link text-dark">Hi, @User.Identity.Name</a>
+                            </li>
+                            <li class="nav-item">
                                 <a asp-action="Logout" asp-controller="Auth" class="nav-link text-dark">Logout</a>
                             </li>
                         }
