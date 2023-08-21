@@ -142,7 +142,7 @@ app.Map("/Coupons", cpn =>
 
         return null;
 
-    }).WithName("getCouponsByID").WithOpenApi();
+    }).RequireAuthorization().WithName("getCouponsByID").WithOpenApi();
 
     // Get coupon by code
     app.MapGet("/GetByCode/{code}", (AppDBContext dBContext, string code) =>
@@ -168,7 +168,7 @@ app.Map("/Coupons", cpn =>
 
         return null;
 
-    }).WithName("getCouponsByCode").WithOpenApi();
+    }).RequireAuthorization().WithName("getCouponsByCode").WithOpenApi();
 
     // Post a new coupon
     app.MapPost("/Post", (AppDBContext dBContext, [FromBody] CouponDTO couponDTO) =>
@@ -198,7 +198,7 @@ app.Map("/Coupons", cpn =>
 
         return null;
 
-    }).WithName("PostCoupon").WithOpenApi();
+    }).WithName("PostCoupon").RequireAuthorization().WithOpenApi();
 
     // Update an existing coupon
     app.MapPut("/Put", (AppDBContext dBContext, [FromBody] CouponDTO couponDTO) =>
@@ -227,7 +227,7 @@ app.Map("/Coupons", cpn =>
 
         return null;
 
-    }).WithName("UpdateCoupon").WithOpenApi();
+    }).WithName("UpdateCoupon").WithOpenApi().RequireAuthorization();
 
     // Delete a coupon
     app.MapDelete("/Delete/{couponID}", (AppDBContext dBContext, int couponID) =>
@@ -256,7 +256,7 @@ app.Map("/Coupons", cpn =>
 
         return null;
 
-    }).WithName("DeleteCoupon").WithOpenApi();
+    }).WithName("DeleteCoupon").WithOpenApi().RequireAuthorization();
 });
 
 app.Run();
