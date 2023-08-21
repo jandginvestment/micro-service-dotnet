@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Text;
+using ECOM.Services.CouponAPI.Extension;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 
@@ -49,22 +50,7 @@ IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-var settingSection = builder.Configuration.GetSection("APISettings");
-var secret = settingSection.GetValue<string>("Secret");
-var issuer = settingSection.GetValue<string>("Issuer");
-var audience = settingSection.GetValue<string>("Audience");
-var key = Encoding.ASCII.GetBytes(secret);
-
-
-builder.Services.AddAuthentication(a =>
-{
-    a.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    a.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(j =>
-{
-    j.TokenValidationParameters = new TokenValidationParameters
-    { ValidateIssuerSigningKey = true, IssuerSigningKey = new SymmetricSecurityKey(key), ValidateIssuer = true ,ValidIssuer = issuer,ValidateAudience = true,ValidAudience = audience};
-});
+builder.AddAuthenticationBuilder();
 
 builder.Services.AddAuthorization();
 
