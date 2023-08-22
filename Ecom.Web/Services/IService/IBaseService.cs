@@ -1,10 +1,9 @@
 ﻿using ECOM.Services.CouponAPI.Models.DTO;
 using ECOM.Web.Models;
 
-namespace ECOM.Web.Services.IService
+namespace ECOM.Web.Services.IService;
+
+public interface IBaseService
 {
-    public interface IBaseService
-    {
-        Task<ResponseDTO?>  SendAsync(RequestDTO requestDTO, bool withBearer =true);
-    }
+    Task<ResponseDTO?>  SendAsync(RequestDTO requestDTO, bool withBearer =true);
 }

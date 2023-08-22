@@ -39,22 +39,22 @@
                     </ul>
                     <ul class="navbar-nav">
                         @if(!User.Identity.IsAuthenticated){
-                        <li class="nav-item">
+                    <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Auth" asp-action="Login">Login</a>
                         </li>
-                        <li class="nav-item">
+                    <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Auth" asp-action="Register">Register</a>
                         </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
+                    }
+                    else
+                    {
+                        <li class="nav-item">
                                 <a asp-action="Logout" asp-controller="Auth" class="nav-link text-dark">Hi, @User.Identity.Name</a>
                             </li>
-                            <li class="nav-item">
+                        <li class="nav-item">
                                 <a asp-action="Logout" asp-controller="Auth" class="nav-link text-dark">Logout</a>
                             </li>
-                        }
+                    }
                     </ul>
                 </div>
             </div>

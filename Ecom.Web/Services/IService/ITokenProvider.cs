@@ -1,9 +1,8 @@
-﻿namespace Ecom.Web.Services.IService
+﻿namespace Ecom.Web.Services.IService;
+
+public interface ITokenProvider
 {
-    public interface ITokenProvider
-    {
-        void SetToken(string token);
-        string? GetToken();
-        void ClearToken();
-    }
+    void SetToken(string token);
+    string? GetToken();
+    void ClearToken();
 }
