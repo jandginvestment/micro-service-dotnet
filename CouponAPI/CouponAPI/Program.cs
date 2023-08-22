@@ -12,6 +12,7 @@ using System.Security.Claims;
 using System.Text;
 using ECOM.Services.CouponAPI.Extension;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -53,6 +54,12 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.AddAuthenticationBuilder();
 
 builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireAdminRole", policy =>
+        policy.RequireRole("ADMIN"));
+});
+
 
 var app = builder.Build();
 
@@ -184,7 +191,7 @@ app.Map("/Coupons", cpn =>
 
         return null;
 
-    }).WithName("PostCoupon").RequireAuthorization().WithOpenApi();
+    }).WithName("PostCoupon").RequireAuthorization("RequireAdminRole").WithOpenApi();
 
     // Update an existing coupon
     app.MapPut("/Put", (AppDBContext dBContext, [FromBody] CouponDTO couponDTO) =>
