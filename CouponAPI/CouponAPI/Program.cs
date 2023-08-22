@@ -220,7 +220,7 @@ app.Map("/Coupons", cpn =>
 
         return null;
 
-    }).WithName("UpdateCoupon").WithOpenApi().RequireAuthorization();
+    }).WithName("UpdateCoupon").WithOpenApi().RequireAuthorization("RequireAdminRole");
 
     // Delete a coupon
     app.MapDelete("/Delete/{couponID}", (AppDBContext dBContext, int couponID) =>
@@ -249,7 +249,7 @@ app.Map("/Coupons", cpn =>
 
         return null;
 
-    }).WithName("DeleteCoupon").WithOpenApi().RequireAuthorization();
+    }).WithName("DeleteCoupon").WithOpenApi().RequireAuthorization("RequireAdminRole");
 });
 
 app.Run();
