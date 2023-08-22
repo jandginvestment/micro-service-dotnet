@@ -1,18 +1,13 @@
 using AutoMapper;
 using ECOM.Services.CouponAPI;
 using ECOM.Services.CouponAPI.Data;
+using ECOM.Services.CouponAPI.Extension;
 using ECOM.Services.CouponAPI.Models;
 using ECOM.Services.CouponAPI.Models.DTO;
 using ECOM.Web.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
-using System.Text;
-using ECOM.Services.CouponAPI.Extension;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
