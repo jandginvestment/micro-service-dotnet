@@ -1,13 +1,11 @@
-using System.Security.Claims;
 using ECOM.Services.AuthAPI.Data;
 using ECOM.Services.AuthAPI.Models;
 using ECOM.Services.AuthAPI.Models.DTO;
+using ECOM.Services.AuthAPI.Services;
 using ECOM.Services.AuthAPI.Services.IServices;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using ECOM.Services.AuthAPI.Services;
 using Microsoft.AspNetCore.Mvc;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
