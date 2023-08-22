@@ -1,4 +1,5 @@
-﻿namespace ECOM.Web.Models;
+﻿namespace ECOM.Services.CouponAPI.Models.DTO;
+
 
 public class ResponseDTO
 {

@@ -1,9 +1,10 @@
 using AutoMapper;
-using ECOM.Services.CouponAPI;
-using ECOM.Services.CouponAPI.Data;
-using ECOM.Services.CouponAPI.Extension;
-using ECOM.Services.CouponAPI.Models;
-using ECOM.Services.CouponAPI.Models.DTO;
+using ECOM.Services.AuthAPI.Models.DTO;
+using ECOM.Services.ProductAPI;
+using ECOM.Services.ProductAPI.Data;
+using ECOM.Services.ProductAPI.Extension;
+using ECOM.Services.ProductAPI.Models;
+using ECOM.Services.ProductAPI.Models.DTO;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,14 +15,17 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen(
     option =>
     {
         option.AddSecurityDefinition(name: JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
         {
             Name = "Authorization",
-            Description = "Enter the token here", In=ParameterLocation.Header,
-            Type = SecuritySchemeType.ApiKey,Scheme = JwtBearerDefaults.AuthenticationScheme
+            Description = "Enter the token here",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = JwtBearerDefaults.AuthenticationScheme
         });
         option.AddSecurityRequirement(new OpenApiSecurityRequirement
         {
@@ -38,8 +42,8 @@ builder.Services.AddSwaggerGen(
         });
 
     });
-builder.Services.AddDbContext<AppDBContext>(option => { option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); });
 
+builder.Services.AddDbContext<AppDBContext>(option => { option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); });
 // Auto mapper related
 IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);
@@ -54,7 +58,6 @@ builder.Services.AddAuthorization(options =>
         policy.RequireRole("ADMIN"));
 });
 
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -63,31 +66,29 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-ApplyMigration();
+
+ ApplyMigration();
+
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseHttpsRedirection();
-
 // Web methods/API declarations
 
-// Get all coupons
-
-
-app.Map("/Coupons", cpn =>
+app.Map("/Products", pts =>
 {
 
     app.MapGet("/Get", (AppDBContext dBContext) =>
     {
         try
         {
-            IEnumerable<Coupon> coupons = dBContext.Coupons.ToList();
+            IEnumerable<Product> products = dBContext.Products.ToList();
 
             var response = new ResponseDTO
             {
                 IsSuccess = true,
-                Result = mapper.Map<IEnumerable<CouponDTO>>(coupons)
+                Result = mapper.Map<IEnumerable<ProductDTO>>(products)
             };
             return response;
         }
@@ -103,18 +104,18 @@ app.Map("/Coupons", cpn =>
 
         return null;
 
-    }).RequireAuthorization().WithName("getCoupons").WithOpenApi();
+    }).RequireAuthorization().WithName("getProducts").WithOpenApi();
 
     // Get coupon by ID
     app.MapGet("/Get/{id}", (AppDBContext dBContext, int id) =>
     {
         try
         {
-            Coupon coupon = dBContext.Coupons.First(u => u.CouponId == id);
+            Product product = dBContext.Products.First(u => u.ProductId == id);
             return new ResponseDTO
             {
                 IsSuccess = true,
-                Result = mapper.Map<CouponDTO>(coupon)
+                Result = mapper.Map<ProductDTO>(product)
             };
         }
         catch (Exception e)
@@ -129,47 +130,22 @@ app.Map("/Coupons", cpn =>
 
         return null;
 
-    }).RequireAuthorization().WithName("getCouponsByID").WithOpenApi();
+    }).RequireAuthorization().WithName("getProductByID").WithOpenApi();
 
-    // Get coupon by code
-    app.MapGet("/GetByCode/{code}", (AppDBContext dBContext, string code) =>
-    {
-        try
-        {
-            Coupon coupon = dBContext.Coupons.First(u => u.CouponCode.ToLower() == code.ToLower());
-            return new ResponseDTO
-            {
-                IsSuccess = true,
-                Result = mapper.Map<CouponDTO>(coupon)
-            };
-        }
-        catch (Exception e)
-        {
-            var response = new ResponseDTO
-            {
-                IsSuccess = false,
-                Error = e.Message
-            };
-            return response;
-        }
-
-        return null;
-
-    }).RequireAuthorization().WithName("getCouponsByCode").WithOpenApi();
-
+    
     // Post a new coupon
-    app.MapPost("/Post", (AppDBContext dBContext, [FromBody] CouponDTO couponDTO) =>
+    app.MapPost("/Post", (AppDBContext dBContext, [FromBody] ProductDTO productDTO) =>
     {
         try
         {
-            var coupon = mapper.Map<Coupon>(couponDTO);
+            var product = mapper.Map<Product>(productDTO);
 
-            dBContext.Coupons.Add(coupon);
+            dBContext.Products.Add(product);
             dBContext.SaveChanges();
             return new ResponseDTO
             {
                 IsSuccess = true,
-                Result = mapper.Map<CouponDTO>(coupon),
+                Result = mapper.Map<ProductDTO>(product),
                 Message = "Created Successfully"
             };
         }
@@ -185,20 +161,20 @@ app.Map("/Coupons", cpn =>
 
         return null;
 
-    }).WithName("PostCoupon").RequireAuthorization("RequireAdminRole").WithOpenApi();
+    }).WithName("PostProduct").RequireAuthorization("RequireAdminRole").WithOpenApi();
 
     // Update an existing coupon
-    app.MapPut("/Put", (AppDBContext dBContext, [FromBody] CouponDTO couponDTO) =>
+    app.MapPut("/Put", (AppDBContext dBContext, [FromBody] ProductDTO productDTO) =>
     {
         try
         {
-            var coupon = mapper.Map<Coupon>(couponDTO);
-            dBContext.Coupons.Update(coupon);
+            var product = mapper.Map<Product>(productDTO);
+            dBContext.Products.Update(product);
             dBContext.SaveChanges();
             return new ResponseDTO
             {
                 IsSuccess = true,
-                Result = mapper.Map<CouponDTO>(coupon),
+                Result = mapper.Map<ProductDTO>(product),
                 Message = "Updated Successfully"
             };
         }
@@ -214,20 +190,20 @@ app.Map("/Coupons", cpn =>
 
         return null;
 
-    }).WithName("UpdateCoupon").WithOpenApi().RequireAuthorization("RequireAdminRole");
+    }).WithName("UpdateProduct").WithOpenApi().RequireAuthorization("RequireAdminRole");
 
     // Delete a coupon
-    app.MapDelete("/Delete/{couponID}", (AppDBContext dBContext, int couponID) =>
+    app.MapDelete("/Delete/{productID}", (AppDBContext dBContext, int productID) =>
     {
         try
         {
-            Coupon coupon = dBContext.Coupons.First(u => u.CouponId == couponID);
-            dBContext.Coupons.Remove(coupon);
+            Product product = dBContext.Products.First(u => u.ProductId == productID);
+            dBContext.Products.Remove(product);
             dBContext.SaveChanges();
             return new ResponseDTO
             {
                 IsSuccess = true,
-                Result = mapper.Map<CouponDTO>(coupon),
+                Result = mapper.Map<ProductDTO>(product),
                 Message = "Deleted Successfully"
             };
         }
@@ -243,7 +219,9 @@ app.Map("/Coupons", cpn =>
 
         return null;
 
-    }).WithName("DeleteCoupon").WithOpenApi().RequireAuthorization("RequireAdminRole");
+    }).WithName("DeleteProduct").WithOpenApi().RequireAuthorization("RequireAdminRole");
+
+
 });
 
 app.Run();
