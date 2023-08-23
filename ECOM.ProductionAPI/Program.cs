@@ -42,7 +42,7 @@ builder.Services.AddSwaggerGen(
         });
 
     });
-
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddDbContext<AppDBContext>(option => { option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); });
 // Auto mapper related
 IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
@@ -67,7 +67,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
- ApplyMigration();
+ApplyMigration();
 
 
 app.UseAuthentication();
@@ -132,7 +132,7 @@ app.Map("/Products", pts =>
 
     }).RequireAuthorization().WithName("getProductByID").WithOpenApi();
 
-    
+
     // Post a new coupon
     app.MapPost("/Post", (AppDBContext dBContext, [FromBody] ProductDTO productDTO) =>
     {
@@ -164,11 +164,37 @@ app.Map("/Products", pts =>
     }).WithName("PostProduct").RequireAuthorization("RequireAdminRole").WithOpenApi();
 
     // Update an existing coupon
-    app.MapPut("/Put", (AppDBContext dBContext, [FromBody] ProductDTO productDTO) =>
+    app.MapPut("/Put", (AppDBContext dBContext, IHttpContextAccessor httpContextAccessor, [FromBody] ProductDTO productDTO) =>
     {
         try
         {
             var product = mapper.Map<Product>(productDTO);
+
+            if (productDTO.Image != null)
+            {
+                if (!string.IsNullOrEmpty(productDTO.ImageLocalPath))
+                {
+                    var oldFilePathDirectory = Path.Combine(Directory.GetCurrentDirectory(), productDTO.ImageLocalPath);
+                    FileInfo file = new FileInfo(oldFilePathDirectory);
+                    if (file.Exists)
+                    {
+                        file.Delete();
+                    }
+                }
+
+                string fileName = productDTO.ProductId + Path.GetExtension(productDTO.Image.FileName);
+                string filePath = @"wwwroot\ProductImages\" + fileName;
+                var filePathDirectory = Path.Combine(Directory.GetCurrentDirectory(), filePath);
+                using (var fileStream = new FileStream(filePathDirectory, FileMode.Create))
+                {
+                    productDTO.Image.CopyTo(fileStream);
+                }
+                var httpContext = httpContextAccessor.HttpContext;
+
+                var baseUrl = $"{httpContext.Request.Scheme}://{httpContext.Request.Host.Value}{httpContext.Request.PathBase.Value}";
+                product.ImageUrl = baseUrl + "/ProductImages/" + fileName;
+                product.ImageLocalPath = filePath;
+            }
             dBContext.Products.Update(product);
             dBContext.SaveChanges();
             return new ResponseDTO
@@ -177,13 +203,14 @@ app.Map("/Products", pts =>
                 Result = mapper.Map<ProductDTO>(product),
                 Message = "Updated Successfully"
             };
+
         }
         catch (Exception e)
         {
             var response = new ResponseDTO
             {
                 IsSuccess = false,
-                Error = e.Message
+                Error = e.InnerException.Message
             };
             return response;
         }

@@ -9,10 +9,11 @@ public class Product
     [Required]
     public int ProductId { get; set; }
     public string CategoryName { get; set; }
-    public string ImageUrl   { get; set; }
     [Range(0, 10000)]
     public double Price { get; set; }
 
+    public string? ImageUrl { get; set; }
+    public string? ImageLocalPath { get; set; }
 }
 
 

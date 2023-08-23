@@ -13,67 +13,70 @@ public class ProductService : IProductService
     {
         _bseService = bseService;
     }
-    public async Task<ResponseDTO?> CreateProductAsync(ProductDTO Product)
+    public async Task<ResponseDTO?> CreateProductAsync(ProductDTO product)
     {
         return await _bseService.SendAsync(new RequestDTO()
         {
             APIType = APIType.POST,
             Url = StaticDetails.ProductAPIBase + "/Post",
-            Data = Product
+            Data = product
 
         });
     }
 
-    public async Task<ResponseDTO?> DeleteProductAsync(int ProductId)
+    public async Task<ResponseDTO?> DeleteProductAsync(int productId)
     {
         return await _bseService.SendAsync(new RequestDTO()
         {
             APIType = APIType.DELETE,
-            Url = StaticDetails.ProductAPIBase + "/Delete" + "/"+ProductId,
+            Url = StaticDetails.ProductAPIBase + "/Delete" + "/" + productId,
 
         });
     }
 
     public async Task<ResponseDTO?> GetAllProductsAsync()
     {
-     
-        return await _bseService.SendAsync(new RequestDTO()
-        {
-            APIType =APIType.GET,
-            Url =StaticDetails.ProductAPIBase+ "/Get",
-
-        });
-    }
-
-    public async Task<ResponseDTO?> GetProductAsync(string ProductCode)
-    {
-        return await _bseService.SendAsync(new RequestDTO()
-        {
-            APIType = APIType.GET,
-            Url = StaticDetails.ProductAPIBase + "/getProductsByCode" +"/"+ProductCode,
-
-        });
-    }
-
-    public async Task<ResponseDTO?> GetProductByIDAsync(int ProductId)
-    {
 
         return await _bseService.SendAsync(new RequestDTO()
         {
             APIType = APIType.GET,
-            Url = StaticDetails.ProductAPIBase + "/Get" + "/" + ProductId,
+            Url = StaticDetails.ProductAPIBase + "/Get",
 
         });
     }
 
-    public async Task<ResponseDTO?> UpdateProductAsync(ProductDTO Product)
+    public async Task<ResponseDTO?> GetProductAsync(string productCode)
+    {
+        return await _bseService.SendAsync(new RequestDTO()
+        {
+            APIType = APIType.GET,
+            Url = StaticDetails.ProductAPIBase + "/getProductsByCode" + "/" + productCode,
+
+        });
+    }
+
+    public async Task<ResponseDTO?> GetProductByIDAsync(int productId)
+    {
+
+        return await _bseService.SendAsync(new RequestDTO()
+        {
+            APIType = APIType.GET,
+            Url = StaticDetails.ProductAPIBase + "/Get" + "/" + productId,
+
+        });
+    }
+
+    public async Task<ResponseDTO?> UpdateProductAsync(ProductDTO product)
     {
         return await _bseService.SendAsync(new RequestDTO()
         {
             APIType = APIType.PUT,
-            Url = StaticDetails.ProductAPIBase + "/UpdateProduct",
-            Data = Product
+            Url = StaticDetails.ProductAPIBase + "/Put",
+            Data = product,
+            ContentType = StaticDetails.ContentType.MultipartFormData
 
         });
     }
+
+
 }

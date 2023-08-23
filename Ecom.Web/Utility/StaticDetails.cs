@@ -1,6 +1,6 @@
 ﻿namespace ECOM.Web.Utility;
-    public class StaticDetails
-    {
+public class StaticDetails
+{
     public static string? ProductAPIBase { get; set; }
     public static string? CouponAPIBase { get; set; }
 
@@ -11,4 +11,9 @@
     public static string Token = "JWT";
 
     public enum APIType { GET, POST, PUT, DELETE }
+    public enum ContentType
+    {
+        Json,
+        MultipartFormData,
     }
+}
