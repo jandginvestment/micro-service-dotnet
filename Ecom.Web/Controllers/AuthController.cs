@@ -1,18 +1,15 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using ECOM.Services.CouponAPI.Models.DTO;
-using ECOM.Web.Models;
-using Ecom.Web.Services;
-using Ecom.Web.Services.IService;
+﻿using ECOM.Web.Models;
+using ECOM.Web.Services.IService;
 using ECOM.Web.Utility;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Security.Principal;
 
-namespace Ecom.Web.Controllers;
+namespace ECOM.Web.Controllers;
 
 public class AuthController : Controller
 {
@@ -30,7 +27,6 @@ public class AuthController : Controller
     public IActionResult Login()
     {
         LoginRequestDTO loginRequestDTO = new();
-
         return View(loginRequestDTO);
 
     }
@@ -128,7 +124,7 @@ public class AuthController : Controller
     {
         await HttpContext.SignOutAsync();
         _tokenProvider.ClearToken();
-        return RedirectToAction("Index","Home");
+        return RedirectToAction("Index", "Home");
 
     }
 

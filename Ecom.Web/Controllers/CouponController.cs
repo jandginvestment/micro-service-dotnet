@@ -1,5 +1,4 @@
-﻿using ECOM.Services.CouponAPI.Models.DTO;
-using ECOM.Web.Models;
+﻿using ECOM.Web.Models;
 using ECOM.Web.Services.IService;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;

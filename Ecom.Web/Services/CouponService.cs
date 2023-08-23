@@ -1,8 +1,6 @@
-﻿using ECOM.Services.CouponAPI.Models.DTO;
-using ECOM.Web.Models;
+﻿using ECOM.Web.Models;
 using ECOM.Web.Services.IService;
 using ECOM.Web.Utility;
-using Microsoft.Extensions.DependencyInjection;
 using static ECOM.Web.Utility.StaticDetails;
 
 namespace ECOM.Web.Services;
@@ -31,18 +29,18 @@ public class CouponService : ICouponService
         return await _bseService.SendAsync(new RequestDTO()
         {
             APIType = APIType.DELETE,
-            Url = StaticDetails.CouponAPIBase + "/Delete" + "/"+couponId,
+            Url = StaticDetails.CouponAPIBase + "/Delete" + "/" + couponId,
 
         });
     }
 
     public async Task<ResponseDTO?> GetAllCouponsAsync()
     {
-     
+
         return await _bseService.SendAsync(new RequestDTO()
         {
-            APIType =APIType.GET,
-            Url =StaticDetails.CouponAPIBase+ "/Get",
+            APIType = APIType.GET,
+            Url = StaticDetails.CouponAPIBase + "/Get",
 
         });
     }
@@ -52,7 +50,7 @@ public class CouponService : ICouponService
         return await _bseService.SendAsync(new RequestDTO()
         {
             APIType = APIType.GET,
-            Url = StaticDetails.CouponAPIBase + "/getCouponsByCode" +"/"+couponCode,
+            Url = StaticDetails.CouponAPIBase + "/getCouponsByCode" + "/" + couponCode,
 
         });
     }

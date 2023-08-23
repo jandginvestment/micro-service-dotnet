@@ -1,8 +1,8 @@
-﻿using Ecom.Web.Services.IService;
+﻿using ECOM.Web.Services.IService;
 using ECOM.Web.Utility;
 using Newtonsoft.Json.Linq;
 
-namespace Ecom.Web.Services;
+namespace ECOM.Web.Services;
 
 public class TokenProvider: ITokenProvider
 {

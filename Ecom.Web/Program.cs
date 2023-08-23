@@ -1,6 +1,6 @@
-using Ecom.Web.Services;
 using ECOM.Web.Services;
-using Ecom.Web.Services.IService;
+using ECOM.Web.Services;
+using ECOM.Web.Services.IService;
 using ECOM.Web.Services.IService;
 using ECOM.Web.Utility;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -31,6 +31,7 @@ builder.Services.AddScoped<ITokenProvider, TokenProvider>();
 
 StaticDetails.CouponAPIBase = builder.Configuration["ServiceURLs:CouponAPI"];
 StaticDetails.AuthAPIBase = builder.Configuration["ServiceURLs:AuthAPI"];
+StaticDetails.ProductAPIBase = builder.Configuration["ServiceURLs:ProductAPI"];
 
 
 var app = builder.Build();

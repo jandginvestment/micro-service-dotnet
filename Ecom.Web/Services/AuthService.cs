@@ -1,12 +1,9 @@
-﻿using System.Security.Claims;
-using Ecom.Web.Services.IService;
-using ECOM.Services.CouponAPI.Models.DTO;
-using ECOM.Web.Models;
+﻿using ECOM.Web.Models;
 using ECOM.Web.Services.IService;
 using ECOM.Web.Utility;
 using static ECOM.Web.Utility.StaticDetails;
 
-namespace Ecom.Web.Services;
+namespace ECOM.Web.Services;
 
 public class AuthService : IAuthService
 {
@@ -24,7 +21,7 @@ public class AuthService : IAuthService
             Url = StaticDetails.AuthAPIBase + "/api/auth/assignRole",
             Data = registrationRequest
 
-        },withBearer:false);
+        }, withBearer: false);
     }
 
     public async Task<ResponseDTO?> LoginAsync(LoginRequestDTO loginRequest)
@@ -35,7 +32,7 @@ public class AuthService : IAuthService
             Url = StaticDetails.AuthAPIBase + "/api/auth/login",
             Data = loginRequest
 
-        },withBearer:false);
+        }, withBearer: false);
     }
 
     public async Task<ResponseDTO?> RegisterAsync(RegistrationRequestDTO registrationRequest)
@@ -49,5 +46,5 @@ public class AuthService : IAuthService
         }, withBearer: false);
     }
 
-   
+
 }

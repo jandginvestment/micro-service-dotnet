@@ -1,10 +1,8 @@
-﻿using ECOM.Services.CouponAPI.Models.DTO;
-using ECOM.Web.Models;
+﻿using ECOM.Web.Models;
 using ECOM.Web.Services.IService;
 using Newtonsoft.Json;
 using System.Net;
 using System.Text;
-using Ecom.Web.Services.IService;
 using static ECOM.Web.Utility.StaticDetails;
 
 namespace ECOM.Web.Services;
@@ -14,7 +12,7 @@ public class BaseService : IBaseService
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ITokenProvider _tokenProvider;
 
-    public BaseService(IHttpClientFactory httpClientFactory,ITokenProvider tokenProvider)
+    public BaseService(IHttpClientFactory httpClientFactory, ITokenProvider tokenProvider)
     {
         _httpClientFactory = httpClientFactory;
         _tokenProvider = tokenProvider;

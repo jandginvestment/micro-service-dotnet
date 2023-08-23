@@ -1,4 +1,4 @@
-﻿namespace Ecom.Web.Services.IService;
+﻿namespace ECOM.Web.Services.IService;
 
 public interface ITokenProvider
 {
