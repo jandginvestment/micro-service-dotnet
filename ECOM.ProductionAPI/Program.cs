@@ -164,7 +164,7 @@ app.Map("/Products", pts =>
     }).WithName("PostProduct").RequireAuthorization("RequireAdminRole").WithOpenApi();
 
     // Update an existing coupon
-    app.MapPut("/Put", (AppDBContext dBContext, IHttpContextAccessor httpContextAccessor, [FromBody] ProductDTO productDTO) =>
+    app.MapPut("/Put", (AppDBContext dBContext, IHttpContextAccessor httpContextAccessor, ProductDTO productDTO) =>
     {
         try
         {
