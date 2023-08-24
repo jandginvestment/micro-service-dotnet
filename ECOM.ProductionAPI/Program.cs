@@ -104,7 +104,7 @@ app.Map("/Products", pts =>
 
         return null;
 
-    }).RequireAuthorization().WithName("getProducts").WithOpenApi();
+    }).WithName("getProducts").WithOpenApi();
 
     // Get coupon by ID
     app.MapGet("/Get/{id}", (AppDBContext dBContext, int id) =>
