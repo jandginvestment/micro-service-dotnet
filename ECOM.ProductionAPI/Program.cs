@@ -47,6 +47,7 @@ builder.Services.AddDbContext<AppDBContext>(option => { option.UseSqlServer(buil
 // Auto mapper related
 IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);
+builder.Services.AddHttpClient();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.AddAuthenticationBuilder();
@@ -163,6 +164,9 @@ app.Map("/Products", pts =>
 
     }).WithName("PostProduct").RequireAuthorization("RequireAdminRole").WithOpenApi();
 
+
+
+
     // Update an existing coupon
     app.MapPut("/Put", (AppDBContext dBContext, IHttpContextAccessor httpContextAccessor, ProductDTO productDTO) =>
     {
@@ -250,6 +254,8 @@ app.Map("/Products", pts =>
 
 
 });
+
+
 
 app.Run();
 

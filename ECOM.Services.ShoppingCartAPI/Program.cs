@@ -1,0 +1,235 @@
+using AutoMapper;
+using ECOM.Services.ShoppingCartAPI;
+using ECOM.Services.ShoppingCartAPI.Data;
+using ECOM.Services.ShoppingCartAPI.Extension;
+using ECOM.Services.ShoppingCartAPI.Models;
+using ECOM.Services.ShoppingCartAPI.Models.DTO;
+using ECOM.Services.ShoppingCartAPI.Services;
+using ECOM.Services.ShoppingCartAPI.Services.IServices;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddSwaggerGen(
+    option =>
+    {
+        option.AddSecurityDefinition(name: JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Description = "Enter the token here",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = JwtBearerDefaults.AuthenticationScheme
+        });
+        option.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = JwtBearerDefaults.AuthenticationScheme
+                    }
+                } , new string[]{}
+            }
+        });
+
+    });
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddDbContext<AppDBContext>(option => { option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); });
+// Auto mapper related
+IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
+builder.Services.AddSingleton(mapper);
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddHttpClient("Product", u => u.BaseAddress = new Uri(builder.Configuration["ServiceURLs:ProductAPI"]));
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.AddAuthenticationBuilder();
+
+builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireAdminRole", policy =>
+        policy.RequireRole("ADMIN"));
+});
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+ApplyMigration();
+
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseHttpsRedirection();
+// Web methods/API declarations
+
+app.Map("/ShoppingCart", sc =>
+{
+    // Post a new shopping cart
+    app.MapPost("/Upsert", async (AppDBContext dBContext, ShoppingCartDTO shoppingCart) =>
+    {
+        try
+        {
+            var cartHeaderFromDB = await dBContext.CartHeaders.AsNoTracking().FirstOrDefaultAsync(u => u.UserID == shoppingCart.CartHeader.UserID);
+            if (cartHeaderFromDB != null)
+            {
+                // update cart header
+                var cartDetailsFromDB = await dBContext.CartDetails.AsNoTracking().FirstOrDefaultAsync(
+                    d => d.CartHeaderID == cartHeaderFromDB.CartHeaderID
+                    );
+                if (cartDetailsFromDB != null)
+                {
+                    // update count
+                    IEnumerable<CartDetail> cartDetails = mapper.Map<IEnumerable<CartDetail>>(shoppingCart.CartDetails);
+
+                    foreach (var cartDetail in cartDetails)
+                    {
+                        //cartDetail.CartHeaderID = cartDetailsFromDB.CartHeaderID;
+                        //cartDetail.CartDetailID = cartDetailsFromDB.CartDetailID;
+                        cartDetail.Count += cartDetailsFromDB.Count;
+                    }
+
+                    dBContext.CartDetails.UpdateRange(cartDetails);
+                    await dBContext.SaveChangesAsync(true);
+                }
+                else
+                {
+                    // create cart details 
+                    IEnumerable<CartDetail> cartDetails = mapper.Map<IEnumerable<CartDetail>>(shoppingCart.CartDetails);
+
+                    foreach (var cartDetail in cartDetails)
+                    {
+                        cartDetail.CartHeaderID = cartDetailsFromDB.CartHeaderID;
+                    }
+
+                    dBContext.CartDetails.AddRange(cartDetails);
+                    await dBContext.SaveChangesAsync(true);
+                }
+
+            }
+            else
+            {
+                // create cart header and details
+
+                CartHeader cartHeader = mapper.Map<CartHeader>(shoppingCart.CartHeader);
+                dBContext.CartHeaders.Add(cartHeader);
+                await dBContext.SaveChangesAsync();
+
+                IEnumerable<CartDetail> cartDetails = mapper.Map<IEnumerable<CartDetail>>(shoppingCart.CartDetails);
+
+                foreach (var cartDetail in cartDetails)
+                {
+                    cartDetail.CartHeaderID = cartHeader.CartHeaderID;
+                }
+
+                dBContext.CartDetails.AddRange(cartDetails);
+                await dBContext.SaveChangesAsync(true);
+
+
+            }
+
+        }
+        catch (Exception e)
+        {
+            var response = new ResponseDTO
+            {
+                IsSuccess = false,
+                Error = e.Message
+            };
+            return response;
+        }
+
+        return new ResponseDTO
+        {
+            Message = "Succussfully upserted",
+            Result = shoppingCart
+        };
+
+    }).WithName("CartUpsert").RequireAuthorization().WithOpenApi();
+
+    app.MapPost("/Remove", async (AppDBContext dBContext, [FromBody] int shoppingCartDetailID) =>
+    {
+        try
+        {
+            CartDetail cartDetail = dBContext.CartDetails.First(d => d.CartDetailID == shoppingCartDetailID);
+            dBContext.CartDetails.Remove(cartDetail);
+
+            int totalCartCount = dBContext.CartDetails.Where(d => d.CartHeaderID == cartDetail.CartHeaderID).Count();
+
+            if (totalCartCount == 1)
+            {
+                var cartHeaderToRemove = await dBContext.CartHeaders.FirstOrDefaultAsync(d => d.CartHeaderID == cartDetail.CartHeaderID);
+                dBContext.CartHeaders.Remove(cartHeaderToRemove);
+            }
+            await dBContext.SaveChangesAsync(true);
+
+        }
+        catch (Exception e)
+        {
+
+            return new ResponseDTO { IsSuccess = false, Error = e.Message };
+        }
+        return new ResponseDTO { Message = "Cart removed successfully" };
+    }).WithName("CartRemove").RequireAuthorization().WithOpenApi();
+    app.MapGet("/GetCart/{userID}", async (AppDBContext dBContext, IProductService _ProductService, string userID) =>
+    {
+        try
+        {
+            ShoppingCartDTO shoppingCart = new ShoppingCartDTO()
+            {
+                CartHeader = mapper.Map<CartHeaderDTO>(dBContext.CartHeaders.FirstOrDefault(h => h.UserID == userID)),
+
+            };
+            IEnumerable<ProductDTO> products = await _ProductService.GetProducts();
+            shoppingCart.CartDetails = mapper.Map<IEnumerable<CartDetailDTO>>(dBContext.CartDetails.Where(d => d.CartHeaderID == shoppingCart.CartHeader.CartHeaderID));
+
+
+            foreach (var cartDetail in shoppingCart.CartDetails)
+            {
+                cartDetail.Product = products.FirstOrDefault(p => p.ProductID == cartDetail.ProductID);
+                shoppingCart.CartHeader.CartTotal += Math.Round(cartDetail.Count * cartDetail.Product.Price, 2);
+            }
+            return new ResponseDTO { Result = shoppingCart };
+        }
+        catch (Exception e)
+        {
+            return new ResponseDTO { IsSuccess = false, Error = e.Message };
+        }
+
+
+    }
+
+    ).WithName("GetCart").RequireAuthorization().WithOpenApi();
+});
+
+app.Run();
+
+
+void ApplyMigration()
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var _db = scope.ServiceProvider.GetRequiredService<AppDBContext>();
+        if (_db.Database.GetPendingMigrations().Count() > 0)
+        {
+            _db.Database.Migrate();
+        }
+    }
+}
+
