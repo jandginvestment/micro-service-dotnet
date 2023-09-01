@@ -8,6 +8,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GateWay", "GateWay", "{2B547117-7A8E-49AE-ACE7-2C47EBD6A3F3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{51BC2D78-D271-480E-8DD6-C727997C7F07}"
+	ProjectSection(SolutionItems) = preProject
+		ownapiexception.snippet = ownapiexception.snippet
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integration", "Integration", "{9EDED1C3-CF24-4AAB-92A5-E6417E64B1A8}"
 EndProject
@@ -35,7 +38,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECOM.ProductAPI", "ECOM.Pro
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ShoppingCart", "ShoppingCart", "{41F1C27E-AD15-45B3-932F-0B88D8B5CC9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECOM.Services.ShoppingCartAPI", "ECOM.Services.ShoppingCartAPI\ECOM.Services.ShoppingCartAPI.csproj", "{256E0471-D8B1-4083-B03E-CBE8387099C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECOM.Services.ShoppingCartAPI", "ECOM.Services.ShoppingCartAPI\ECOM.Services.ShoppingCartAPI.csproj", "{256E0471-D8B1-4083-B03E-CBE8387099C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

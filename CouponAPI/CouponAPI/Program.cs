@@ -20,8 +20,10 @@ builder.Services.AddSwaggerGen(
         option.AddSecurityDefinition(name: JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
         {
             Name = "Authorization",
-            Description = "Enter the token here", In=ParameterLocation.Header,
-            Type = SecuritySchemeType.ApiKey,Scheme = JwtBearerDefaults.AuthenticationScheme
+            Description = "Enter the token here",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = JwtBearerDefaults.AuthenticationScheme
         });
         option.AddSecurityRequirement(new OpenApiSecurityRequirement
         {

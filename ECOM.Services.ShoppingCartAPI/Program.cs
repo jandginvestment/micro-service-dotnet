@@ -51,7 +51,9 @@ builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddHttpClient("Product", u => u.BaseAddress = new Uri(builder.Configuration["ServiceURLs:ProductAPI"]));
+builder.Services.AddHttpClient("Coupon", u => u.BaseAddress = new Uri(builder.Configuration["ServiceURLs:CouponAPI"]));
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICouponService, CouponService>();
 builder.AddAuthenticationBuilder();
 
 builder.Services.AddAuthorization();
@@ -162,6 +164,58 @@ app.Map("/ShoppingCart", sc =>
         };
 
     }).WithName("CartUpsert").RequireAuthorization().WithOpenApi();
+    app.MapPost("/ApplyCoupon", async (AppDBContext dBContext, [FromBody] ShoppingCartDTO shoppingCart) =>
+    {
+
+        try
+        {
+            var cartFromDB = await dBContext.CartHeaders.FirstAsync<CartHeader>(h => h.UserID == shoppingCart.CartHeader.UserID);
+
+            cartFromDB.CouponCode = shoppingCart.CartHeader.CouponCode;
+            dBContext.CartHeaders.Update(cartFromDB);
+            await dBContext.SaveChangesAsync(true);
+        }
+        catch (Exception e)
+        {
+
+            var response = new ResponseDTO
+            {
+                IsSuccess = false,
+                Error = e.Message
+            };
+            return response;
+        }
+        return new ResponseDTO
+        {
+            Message = "Coupon code Succussfully applied",
+        };
+    }).WithName("ApplyCoupon").RequireAuthorization().WithOpenApi();
+    app.MapPost("/RemoveCoupon", async (AppDBContext dBContext, [FromBody] ShoppingCartDTO shoppingCart) =>
+    {
+
+        try
+        {
+            var cartFromDB = await dBContext.CartHeaders.FirstAsync<CartHeader>(h => h.UserID == shoppingCart.CartHeader.UserID);
+
+            cartFromDB.CouponCode = string.Empty;
+            dBContext.CartHeaders.Update(cartFromDB);
+            await dBContext.SaveChangesAsync(true);
+        }
+        catch (Exception e)
+        {
+
+            var response = new ResponseDTO
+            {
+                IsSuccess = false,
+                Error = e.Message
+            };
+            return response;
+        }
+        return new ResponseDTO
+        {
+            Message = "Coupon code Succussfully removed",
+        };
+    }).WithName("RemoveCoupon").RequireAuthorization().WithOpenApi();
 
     app.MapPost("/Remove", async (AppDBContext dBContext, [FromBody] int shoppingCartDetailID) =>
     {
@@ -187,7 +241,7 @@ app.Map("/ShoppingCart", sc =>
         }
         return new ResponseDTO { Message = "Cart removed successfully" };
     }).WithName("CartRemove").RequireAuthorization().WithOpenApi();
-    app.MapGet("/GetCart/{userID}", async (AppDBContext dBContext, IProductService _ProductService, string userID) =>
+    app.MapGet("/Get/{userID}", async (AppDBContext dBContext, ICouponService _CouponService, IProductService _ProductService, string userID) =>
     {
         try
         {
@@ -204,6 +258,16 @@ app.Map("/ShoppingCart", sc =>
             {
                 cartDetail.Product = products.FirstOrDefault(p => p.ProductID == cartDetail.ProductID);
                 shoppingCart.CartHeader.CartTotal += Math.Round(cartDetail.Count * cartDetail.Product.Price, 2);
+            }
+            // apply discount if any coupon code on cart header
+            if (!string.IsNullOrEmpty(shoppingCart.CartHeader.CouponCode))
+            {
+                var coupon = await _CouponService.getCouponByCode(shoppingCart.CartHeader.CouponCode);
+                if (coupon != null && shoppingCart.CartHeader.CartTotal > coupon.MinimumAmount)
+                {
+                    shoppingCart.CartHeader.CartTotal -= coupon.DiscountAmount;
+                    shoppingCart.CartHeader.Discount = coupon.DiscountAmount;
+                }
             }
             return new ResponseDTO { Result = shoppingCart };
         }
