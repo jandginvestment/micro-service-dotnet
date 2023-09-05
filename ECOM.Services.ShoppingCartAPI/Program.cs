@@ -6,6 +6,7 @@ using ECOM.Services.ShoppingCartAPI.Models;
 using ECOM.Services.ShoppingCartAPI.Models.DTO;
 using ECOM.Services.ShoppingCartAPI.Services;
 using ECOM.Services.ShoppingCartAPI.Services.IServices;
+using ECOM.Services.ShoppingCartAPI.Utility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -43,15 +44,18 @@ builder.Services.AddSwaggerGen(
         });
 
     });
-builder.Services.AddHttpContextAccessor();
 builder.Services.AddDbContext<AppDBContext>(option => { option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); });
 // Auto mapper related
 IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-builder.Services.AddHttpClient("Product", u => u.BaseAddress = new Uri(builder.Configuration["ServiceURLs:ProductAPI"]));
-builder.Services.AddHttpClient("Coupon", u => u.BaseAddress = new Uri(builder.Configuration["ServiceURLs:CouponAPI"]));
+//for autherizing inter service calls
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<BackendAPIAuthenticationHttpHandler>();
+
+builder.Services.AddHttpClient("Product", u => u.BaseAddress = new Uri(builder.Configuration["ServiceURLs:ProductAPI"])).AddHttpMessageHandler<BackendAPIAuthenticationHttpHandler>();
+builder.Services.AddHttpClient("Coupon", u => u.BaseAddress = new Uri(builder.Configuration["ServiceURLs:CouponAPI"])).AddHttpMessageHandler<BackendAPIAuthenticationHttpHandler>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICouponService, CouponService>();
 builder.AddAuthenticationBuilder();
@@ -240,7 +244,7 @@ app.Map("/ShoppingCart", sc =>
             return new ResponseDTO { IsSuccess = false, Error = e.Message };
         }
         return new ResponseDTO { Message = "Cart removed successfully" };
-    }).WithName("CartRemove").RequireAuthorization().WithOpenApi();
+    }).WithName("RemoveCart").RequireAuthorization().WithOpenApi();
     app.MapGet("/Get/{userID}", async (AppDBContext dBContext, ICouponService _CouponService, IProductService _ProductService, string userID) =>
     {
         try
