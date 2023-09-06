@@ -32,6 +32,7 @@ public class ShoppingCartController : Controller
             return RedirectToAction(nameof(CartIndex));
 
         }
+
         return View();
     }
 

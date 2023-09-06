@@ -106,9 +106,12 @@ app.Map("/ShoppingCart", sc =>
 
                     foreach (var cartDetail in cartDetails)
                     {
-                        //cartDetail.CartHeaderID = cartDetailsFromDB.CartHeaderID;
+                        cartDetail.CartHeaderID = cartDetailsFromDB.CartHeaderID;
                         //cartDetail.CartDetailID = cartDetailsFromDB.CartDetailID;
-                        cartDetail.Count += cartDetailsFromDB.Count;
+                        if (cartDetail.ProductID == cartDetailsFromDB.ProductID)
+                        {
+                            cartDetail.Count += cartDetailsFromDB.Count;
+                        }
                     }
 
                     dBContext.CartDetails.UpdateRange(cartDetails);
