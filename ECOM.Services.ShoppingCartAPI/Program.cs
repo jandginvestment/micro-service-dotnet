@@ -97,7 +97,8 @@ app.Map("/ShoppingCart", sc =>
             {
                 // update cart header
                 var cartDetailsFromDB = await dBContext.CartDetails.AsNoTracking().FirstOrDefaultAsync(
-                    d => d.CartHeaderID == cartHeaderFromDB.CartHeaderID
+                     d => d.ProductID == shoppingCart.CartDetails.First().ProductID &&
+                     d.CartHeaderID == cartHeaderFromDB.CartHeaderID
                     );
                 if (cartDetailsFromDB != null)
                 {
@@ -107,7 +108,7 @@ app.Map("/ShoppingCart", sc =>
                     foreach (var cartDetail in cartDetails)
                     {
                         cartDetail.CartHeaderID = cartDetailsFromDB.CartHeaderID;
-                        //cartDetail.CartDetailID = cartDetailsFromDB.CartDetailID;
+                        cartDetail.CartDetailID = cartDetailsFromDB.CartDetailID;
                         if (cartDetail.ProductID == cartDetailsFromDB.ProductID)
                         {
                             cartDetail.Count += cartDetailsFromDB.Count;
@@ -124,7 +125,7 @@ app.Map("/ShoppingCart", sc =>
 
                     foreach (var cartDetail in cartDetails)
                     {
-                        cartDetail.CartHeaderID = cartDetailsFromDB.CartHeaderID;
+                        cartDetail.CartHeaderID = cartHeaderFromDB.CartHeaderID;
                     }
 
                     dBContext.CartDetails.AddRange(cartDetails);
