@@ -9,6 +9,7 @@
 *.user
 *.userosscache
 *.sln.docstates
+.vs/
 
 # Ignore all DLL files
 *.dll
