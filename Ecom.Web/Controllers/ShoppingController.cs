@@ -50,6 +50,23 @@ public class ShoppingCartController : Controller
     }
 
     [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> EmailCart(ShoppingCartDTO shoppingCart)
+    {
+        var cart = await LoadShoppingCartOfLoggedInUser();
+        cart.CartHeader.Email = User.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Email)?.Value;
+
+        var response = await _shoppingCartService.EmailCartAsync(cart);
+        if (response != null & response.IsSuccess)
+        {
+            TempData["Success"] = "Email Applied";
+            return RedirectToAction(nameof(CartIndex));
+
+        }
+        return View();
+    }
+
+    [Authorize]
     public async Task<IActionResult> RemoveCoupon(ShoppingCartDTO shoppingCart)
     {
         var response = await _shoppingCartService.RemoveCouponAsync(shoppingCart);

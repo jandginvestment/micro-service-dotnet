@@ -1,11 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿namespace ECOM.Services.EmailAPI.Models.DTO;
 
-namespace ECOM.Web.Models;
-
-[Bind]
 public class ShoppingCartDTO
 {
     public CartHeaderDTO CartHeader { get; set; }
     public IEnumerable<CartDetailDTO>? CartDetails { get; set; } = Enumerable.Empty<CartDetailDTO>();
-
 }

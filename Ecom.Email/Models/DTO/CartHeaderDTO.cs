@@ -1,4 +1,4 @@
-﻿namespace ECOM.Services.ShoppingCartAPI.Models.DTO;
+﻿namespace ECOM.Services.EmailAPI.Models.DTO;
 
 public class CartHeaderDTO
 {

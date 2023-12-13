@@ -1,4 +1,6 @@
 using AutoMapper;
+using Ecom.MessageBus;
+using Ecom.MessageBus.Interfaces;
 using ECOM.Services.ShoppingCartAPI;
 using ECOM.Services.ShoppingCartAPI.Data;
 using ECOM.Services.ShoppingCartAPI.Extension;
@@ -58,6 +60,8 @@ builder.Services.AddHttpClient("Product", u => u.BaseAddress = new Uri(builder.C
 builder.Services.AddHttpClient("Coupon", u => u.BaseAddress = new Uri(builder.Configuration["ServiceURLs:CouponAPI"])).AddHttpMessageHandler<BackendAPIAuthenticationHttpHandler>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICouponService, CouponService>();
+builder.Services.AddScoped<IMessageBus, MessageBus>();
+
 builder.AddAuthenticationBuilder();
 
 builder.Services.AddAuthorization();
@@ -288,6 +292,24 @@ app.Map("/ShoppingCart", sc =>
     }
 
     ).WithName("GetCart").RequireAuthorization().WithOpenApi();
+
+    app.MapPost("/EmailCart", async ([FromBody] ShoppingCartDTO shoppingCart, IMessageBus _MessageBus, IConfiguration _configuration) =>
+    {
+
+        try
+        {
+            await _MessageBus.PublishMessage(shoppingCart, _configuration.GetValue<string>("TopicAndQueNames:EmailShoppingCart"));
+            return new ResponseDTO { Result = shoppingCart };
+        }
+        catch (Exception e)
+        {
+
+            return new ResponseDTO { IsSuccess = false, Error = e.Message };
+
+        }
+
+
+    }).WithName("EmailCart").RequireAuthorization().WithOpenApi();
 });
 
 app.Run();

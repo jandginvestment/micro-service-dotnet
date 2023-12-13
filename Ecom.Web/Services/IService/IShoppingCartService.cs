@@ -9,4 +9,6 @@ public interface IShoppingCartService
     Task<ResponseDTO?> RemoveCouponAsync(ShoppingCartDTO ShoppingCart);
     Task<ResponseDTO?> DeleteShoppingCartAsync(int shoppingCartDetailID);
     Task<ResponseDTO?> GetShoppingCartAsync(string userID);
+    Task<ResponseDTO?> EmailCartAsync(ShoppingCartDTO shoppingCart);
+
 }
