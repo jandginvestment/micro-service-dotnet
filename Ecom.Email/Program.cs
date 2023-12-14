@@ -1,3 +1,6 @@
+using Ecom.EmailAPI;
+using Ecom.EmailAPI.Extensions;
+using Ecom.EmailAPI.Messaging;
 using ECOM.Services.EmailAPI.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDBContext>(option => { option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); });
+builder.Services.AddSingleton<IAzureServiceBusConsumer, AzureServiceBusConsumer>();
 
 var app = builder.Build();
 
@@ -18,6 +22,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 ApplyMigration();
+app.UseAzureBusConsumer();
 app.UseHttpsRedirection();
 
 void ApplyMigration()
@@ -33,8 +38,3 @@ void ApplyMigration()
 }
 
 app.Run();
-
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
