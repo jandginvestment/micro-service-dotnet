@@ -22,6 +22,12 @@ public class ShoppingCartController : Controller
     }
 
     [Authorize]
+    public async Task<IActionResult> Checkout()
+    {
+        return View(await LoadShoppingCartOfLoggedInUser());
+    }
+
+    [Authorize]
     public async Task<IActionResult> RemoveCart(int shoppingCartDetailID)
     {
         var userID = User.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Sub)?.Value;

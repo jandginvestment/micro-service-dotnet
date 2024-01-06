@@ -8,8 +8,10 @@ public class CartHeaderDTO
     public double Discount { get; set; } = 0;
     public double CartTotal { get; set; } = 0;
 
+    public string? Name { get; set; }
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
+
     public string? Email { get; set; }
     public string? Phone { get; set; }
 }

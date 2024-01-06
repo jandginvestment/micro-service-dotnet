@@ -1,4 +1,6 @@
-﻿namespace ECOM.Services.ShoppingCartAPI.Models.DTO;
+﻿namespace ECOM.Services.OrderAPI.Models.DTO;
+
+
 
 public class CartHeaderDTO
 {
@@ -7,7 +9,6 @@ public class CartHeaderDTO
     public string? CouponCode { get; set; }
     public double Discount { get; set; } = 0;
     public double CartTotal { get; set; } = 0;
-
     public string? Name { get; set; }
     public string? FirstName { get; set; }
     public string? LastName { get; set; }

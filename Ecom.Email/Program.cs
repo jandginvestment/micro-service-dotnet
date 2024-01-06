@@ -1,6 +1,7 @@
 using Ecom.EmailAPI;
 using Ecom.EmailAPI.Extensions;
 using Ecom.EmailAPI.Messaging;
+using Ecom.EmailAPI.Services;
 using ECOM.Services.EmailAPI.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +12,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDBContext>(option => { option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); });
+
+var optionBuilder = new DbContextOptionsBuilder<AppDBContext>();
+optionBuilder.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+builder.Services.AddSingleton(new EmailService(optionBuilder.Options));
+
+
 builder.Services.AddSingleton<IAzureServiceBusConsumer, AzureServiceBusConsumer>();
 
 var app = builder.Build();

@@ -1,3 +1,5 @@
+using Ecom.MessageBus;
+using Ecom.MessageBus.Interfaces;
 using ECOM.Services.AuthAPI.Data;
 using ECOM.Services.AuthAPI.Models;
 using ECOM.Services.AuthAPI.Models.DTO;
@@ -24,6 +26,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFramework
 builder.Services.AddScoped<IJWTTokenGenerator, JWTTokenGenerator>();
 builder.Services.AddScoped<JWTTokenGenerator>();
 
+builder.Services.AddScoped<IMessageBus, MessageBus>();
+
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddAuthorization();
 var app = builder.Build();
@@ -33,7 +37,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    
+
 }
 ApplyMigration();
 app.UseAuthentication();
@@ -42,7 +46,7 @@ app.UseHttpsRedirection();
 
 
 #region API
-app.MapPost("/api/auth/register", async (IAuthService authService, [FromBody] RegistrationRequestDTO registrationRequest) =>
+app.MapPost("/api/auth/register", async (IAuthService authService, IConfiguration _configuration, [FromBody] RegistrationRequestDTO registrationRequest, IMessageBus _messageBus) =>
 {
 
     var error = await authService.Register(registrationRequest);
@@ -51,6 +55,7 @@ app.MapPost("/api/auth/register", async (IAuthService authService, [FromBody] Re
     {
         return Results.BadRequest(new ResponseDTO() { Error = error, IsSuccess = false });
     }
+    await _messageBus.PublishMessage(registrationRequest.Email, _configuration.GetValue<string>("TopicAndQueNames:RegisterUserQue"));
     return Results.Ok(new ResponseDTO() { IsSuccess = true, Message = "Successfully created" });
 
 }).WithName("Register").WithOpenApi();
@@ -59,9 +64,9 @@ app.MapPost("/api/auth/login", async (IAuthService _authService, [FromBody] Logi
 {
     var loginResponse = await _authService.Login(loginRequest);
 
-    if(loginResponse.User == null) { return Results.BadRequest(new ResponseDTO() { Message = "user name or password are incorrect", IsSuccess = false }); }
+    if (loginResponse.User == null) { return Results.BadRequest(new ResponseDTO() { Message = "user name or password are incorrect", IsSuccess = false }); }
 
-    return Results.Ok(new ResponseDTO() { Result = loginResponse});
+    return Results.Ok(new ResponseDTO() { Result = loginResponse });
 
 }).WithName("Login").WithOpenApi();
 
@@ -72,7 +77,7 @@ app.MapPost("/api/auth/assignRole", async (IAuthService _authService, [FromBody]
 
     if (!roleAssignment) { return Results.BadRequest(new ResponseDTO() { Message = "Role error encountered", IsSuccess = false }); }
 
-    return Results.Ok(new ResponseDTO() { Result = roleAssignment ,IsSuccess = true});
+    return Results.Ok(new ResponseDTO() { Result = roleAssignment, IsSuccess = true });
 
 }).WithName("assignRole").WithOpenApi();
 #endregion
