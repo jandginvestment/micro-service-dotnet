@@ -10,9 +10,11 @@ namespace ECOM.Web.Controllers;
 public class ShoppingCartController : Controller
 {
     private readonly IShoppingCartService _shoppingCartService;
-    public ShoppingCartController(IShoppingCartService shoppingCartService)
+    private readonly IOrderService _orderService;
+    public ShoppingCartController(IShoppingCartService shoppingCartService, IOrderService orderService)
     {
         _shoppingCartService = shoppingCartService;
+        _orderService = orderService;
     }
 
     [Authorize]
@@ -25,6 +27,25 @@ public class ShoppingCartController : Controller
     public async Task<IActionResult> Checkout()
     {
         return View(await LoadShoppingCartOfLoggedInUser());
+    }
+
+    [Authorize]
+    [HttpPost]
+    [ActionName("Checkout")]
+    public async Task<IActionResult> Checkout(ShoppingCartDTO shoppingCart)
+    {
+        ShoppingCartDTO shoppingCartDTO = await LoadShoppingCartOfLoggedInUser();
+        shoppingCartDTO.CartHeader.Name = shoppingCart.CartHeader.Name;
+        shoppingCartDTO.CartHeader.Phone = shoppingCart.CartHeader.Phone;
+        shoppingCartDTO.CartHeader.Email = shoppingCart.CartHeader.Email;
+
+        var response = await _orderService.CreateOrderAsync(shoppingCartDTO);
+        OrderHeaderDTO orderHeader = JsonConvert.DeserializeObject<OrderHeaderDTO>(Convert.ToString(response.Result));
+        if (response != null && response.IsSuccess)
+        { // stripe session
+        }
+        return View();
+
     }
 
     [Authorize]

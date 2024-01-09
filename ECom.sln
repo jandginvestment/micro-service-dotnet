@@ -48,7 +48,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EmailLogger", "EmailLogger"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OrderAPI", "OrderAPI", "{34B525E7-A2AA-4C35-8E15-69010164B92B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECOM.Services.OrderAPI", "ECOM.Services.OrderAPI\ECOM.Services.OrderAPI.csproj", "{15AED8DD-398C-4750-8551-FA77AC0AF460}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECOM.Services.OrderAPI", "ECOM.Services.OrderAPI\ECOM.Services.OrderAPI.csproj", "{15AED8DD-398C-4750-8551-FA77AC0AF460}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -28,6 +28,7 @@ builder.Services.AddScoped<IBaseService, BaseService>();
 builder.Services.AddScoped<ICouponService, CouponService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IShoppingCartService, ShoppingCartService>();
 builder.Services.AddScoped<ITokenProvider, TokenProvider>();
 
@@ -36,6 +37,7 @@ StaticDetails.CouponAPIBase = builder.Configuration["ServiceURLs:CouponAPI"];
 StaticDetails.AuthAPIBase = builder.Configuration["ServiceURLs:AuthAPI"];
 StaticDetails.ProductAPIBase = builder.Configuration["ServiceURLs:ProductAPI"];
 StaticDetails.ShoppingCartAPIBase = builder.Configuration["ServiceURLs:ShoppingCartAPI"];
+StaticDetails.OrderAPIBase = builder.Configuration["ServiceURLs:OrderAPI"];
 
 
 var app = builder.Build();
